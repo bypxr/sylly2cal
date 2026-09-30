@@ -9,7 +9,7 @@
 import { CATEGORIES, resolveWindow } from './shared.js';
 
 const GIS_URL = 'https://accounts.google.com/gsi/client';
-const MSAL_URL = 'https://alcdn.msauth.net/browser/3.20.0/js/msal-browser.min.js';
+const MSAL_URL = 'https://cdn.jsdelivr.net/npm/@azure/msal-browser@3.20.0/lib/msal-browser.min.js';
 const GOOGLE_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
 const GRAPH_SCOPES = ['Calendars.ReadWrite'];
 
