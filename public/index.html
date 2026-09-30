@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>sylly2cal — syllabus to calendar</title>
+<meta name="description" content="Turn your course syllabus into calendar events for Google Calendar or Outlook.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%2316202B'/><rect x='7' y='13' width='18' height='5' fill='%23FFE14D' transform='rotate(-4 16 15)'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wordmark">
+    <span class="wordmark-word">sylly2cal</span>
+    <span class="wordmark-swipe">syllabus to calendar</span>
+  </div>
+  <button type="button" class="link-button" id="open-settings" aria-expanded="false" aria-controls="settings">Settings</button>
+</header>
+
+<main id="main">
+
+  <section class="intake" id="intake">
+    <div class="intake-copy">
+      <h1>Every deadline in your syllabus, on your calendar in one go.</h1>
+      <p class="lede">Upload the syllabus your professor posted. We pull out the exams, quizzes and due dates, you check the list, then send it to Google Calendar or Outlook.</p>
+      <p class="privacy">Your file is read, parsed and thrown away. Nothing is saved and no account is needed.</p>
+    </div>
+
+    <div class="dropzone" id="dropzone" tabindex="0" role="button" aria-describedby="dropzone-hint">
+      <svg class="dropzone-mark" viewBox="0 0 64 48" aria-hidden="true">
+        <rect x="6" y="4" width="40" height="40" rx="2" class="page"/>
+        <line x1="14" y1="16" x2="38" y2="16"/><line x1="14" y1="24" x2="38" y2="24"/><line x1="14" y1="32" x2="30" y2="32"/>
+        <rect x="12" y="21" width="28" height="6" class="swipe"/>
+      </svg>
+      <p class="dropzone-title">Drop your syllabus here</p>
+      <p class="dropzone-hint" id="dropzone-hint">or <button type="button" class="link-button" id="browse">choose a file</button> — PDF, Word or text</p>
+      <input type="file" id="file-input" accept=".pdf,.docx,.txt,.md,.csv,.html" hidden>
+    </div>
+
+    <details class="paste">
+      <summary>Paste the schedule instead</summary>
+      <textarea id="paste-text" rows="7" placeholder="Sept 18  Exam 1, 6:30-8:00 pm, Willard 173&#10;Oct 2  Lab report due 11:59pm"></textarea>
+      <button type="button" class="button button-quiet" id="parse-paste">Read this text</button>
+    </details>
+
+    <p class="sample">No syllabus handy? <button type="button" class="link-button" id="load-sample">Try the sample</button></p>
+  </section>
+
+  <div class="status" id="status" role="status" aria-live="polite" hidden></div>
+
+  <section class="review" id="review" hidden>
+    <div class="review-head">
+      <div>
+        <h2>Check these before adding them</h2>
+        <p class="review-sub" id="review-sub"></p>
+      </div>
+      <button type="button" class="link-button" id="start-over">Start over</button>
+    </div>
+
+    <details class="preview">
+      <summary id="preview-summary">See the text we read from your file</summary>
+      <pre id="preview-text"></pre>
+    </details>
+
+    <figure class="loadstrip" id="loadstrip" hidden>
+      <figcaption>Where the work lands this term</figcaption>
+      <div class="loadstrip-bars" id="loadstrip-bars"></div>
+      <div class="loadstrip-axis" id="loadstrip-axis"></div>
+    </figure>
+
+    <div class="controls">
+      <div class="filters" id="filters" role="group" aria-label="Filter by type"></div>
+      <div class="bulk">
+        <button type="button" class="link-button" id="select-all">Select all</button>
+        <button type="button" class="link-button" id="select-none">Clear</button>
+        <button type="button" class="link-button" id="add-manual">Add an item</button>
+      </div>
+    </div>
+
+    <div class="schedule" id="schedule"></div>
+    <p class="empty" id="empty" hidden>Nothing matches these filters.</p>
+  </section>
+</main>
+
+<div class="export" id="export" hidden>
+  <p class="export-count" id="export-count">0 selected</p>
+  <div class="export-actions">
+    <button type="button" class="button button-primary" id="add-google">Add to Google Calendar</button>
+    <button type="button" class="button button-primary" id="add-outlook">Add to Outlook</button>
+    <button type="button" class="button" id="download-ics">Download .ics</button>
+  </div>
+</div>
+
+<aside class="settings" id="settings" hidden aria-label="Settings">
+  <div class="settings-inner">
+    <div class="settings-head">
+      <h2>Settings</h2>
+      <button type="button" class="link-button" id="close-settings">Done</button>
+    </div>
+
+    <label class="field">
+      <span class="field-label">Course name</span>
+      <input type="text" id="course-name" placeholder="BA 301" autocomplete="off">
+      <span class="field-note">Goes in front of every event title.</span>
+    </label>
+
+    <label class="field">
+      <span class="field-label">Time zone</span>
+      <select id="timezone"></select>
+    </label>
+
+    <fieldset class="field">
+      <legend class="field-label">Term dates</legend>
+      <div class="field-row">
+        <input type="date" id="term-start" aria-label="Term starts">
+        <input type="date" id="term-end" aria-label="Term ends">
+      </div>
+      <span class="field-note">Used to work out the year when the syllabus only gives a month and day.</span>
+    </fieldset>
+
+    <fieldset class="field">
+      <legend class="field-label">Reminders</legend>
+      <div class="checks" id="reminders"></div>
+    </fieldset>
+
+    <p class="settings-foot" id="connection-note"></p>
+  </div>
+</aside>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<footer class="colophon">
+  <p>Always double-check against your syllabus. Professors move dates.</p>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

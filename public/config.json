@@ -1,0 +1,5 @@
+{
+  "googleClientId": "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com",
+  "microsoftClientId": "YOUR_MICROSOFT_APPLICATION_ID",
+  "microsoftTenant": "common"
+}
