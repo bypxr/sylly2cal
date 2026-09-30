@@ -218,7 +218,7 @@ function parseLines(text, term) {
     if (DROP.some((re) => re.test(line)) && !/\bdue\b/i.test(line)) continue;
     if (!KEEP.test(line)) continue;
 
-    const results = chrono.parse(line, refDate, { forwardDate: false });
+    const results = chrono.parse(line, { instant: refDate, timezone: 0 }, { forwardDate: false });
     if (!results.length) continue;
 
     // "There will be two in-class Midterms on Oct 7 and Nov 11, and a Final
