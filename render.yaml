@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: sylly2cal
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
